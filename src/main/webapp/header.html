@@ -1,0 +1,96 @@
+<!--引入js 用于获取参数-->
+<script src="libs/boostrap/js/getParameter.js"></script>
+<script>
+
+    $(function () {
+      //页面加载在，请求用户名
+      $.get("findUserServlet",{},function (data) {       //&如果请求失败，则会一直显示  "欢迎回来 undefine"
+        var msg = "欢迎回来,"+data.name;
+        $("#span_username").html(msg);
+        $("#collection").html("我的收藏");
+        $("#exti").html("退出");
+
+        $(".nologin").html(" ");
+      });
+      //请求分类信息
+        $.get("category/finall",{},function (data) {
+             // data{cid:1}{cname:港澳游} 数组
+
+             //展示首页
+             var lis ='<li class="nav-active" ><a href="Index.html">首页</a></li>';
+            //遍历数组拼接字符串
+            for(var i = 0; i < data.length; i++){
+                var li ='<li><a href="route_list.html?cid='+data[i].cid+'">'+data[i].cname+'</a></li>';
+                lis +=li;
+            }
+             lis+='<li><a href="#">收藏排行榜</a></li>'
+
+            //将 lis字符串 设置到ul的html内容中,把生成的字符串传进去
+              $("#category").html(lis);
+
+            });
+
+            //3.搜索功能（route_list使用）
+            //给搜索绑定单击事件，获取搜索输入框的内容
+            $("#search-button").click(function () {
+                 var rname = $("#search_input").val();  //搜索框值
+                 //js 获取网页参数 进行传递
+                 var cid = getParameter("cid");
+
+                 //跳转路径 http://localhost:9999/mvnmiddle/route_list.html?cid=5  拼接rname XXX
+                 location.href="http://localhost:9999/mvnmiddle/route_list.html?cid="+cid+"&rname="+rname;
+
+            });
+
+    });
+
+</script>
+<header id="header">
+    <div class="top_banner">
+        <img src="libs/boostrap/img/top_banner.jpg" alt="">
+    </div>
+    <div style="margin-left:1200px">
+        <!-- 未登录状态  -->
+        <div class="nologin">
+            <a href="login.html">登录</a>
+            <a href="registspage.html">注册</a>
+        </div>
+        <!-- 登录状态  -->
+        <div class="">
+
+            <span id="span_username"></span>
+            <a href="myfavorite.html" class="collection"><span id="collection"></span></a>
+            <a href="javascript:location.href='exitServlet';"><span id="exti"></span></a>
+        </div>
+    </div>
+    <div class="header_wrap">
+        <div class="topbar">
+            <div class="logo">
+                <a href="/"><img src="libs/boostrap/img/logo.jpg" alt=""></a>
+            </div>
+            <div class="search">
+                <input name="" id="search_input"  type="text" placeholder="请输入路线名称" class="search_input" autocomplete="off">
+                <a href="javascript:;" id="search-button" class="search-button">搜索</a>
+            </div>
+            <div class="hottel">
+                <div class="hot_pic">
+                    <img src="libs/boostrap/img/hot_tel.jpg" alt="">
+                </div>
+                <div class="hot_tel">
+                    <p class="hot_time">客服热线(9:00-6:00)</p>
+                    <p class="hot_num">400-618-9090</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- 头部 end -->
+<!-- 首页导航 -->
+<div class="navitem">
+    <ul id="category" class="nav">
+        <!-- <li class="nav-active"><a href="index.html">首页</a></li>
+         <li><a href="route_list.html">门票</a></li>
+
+         <li><a href="favoriterank.html">收藏排行榜</a></li>-->
+    </ul>
+</div>

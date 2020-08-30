@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--  1 IE 支持-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--css-->
+
+    <link rel="stylesheet" type="text/css" href="libs/boostrap/css/common.css">
+    <link rel="stylesheet" type="text/css" href="libs/boostrap/css/search.css">
+<!--引入js 用于获取参数-->
+    <script src="libs/boostrap/js/getParameter.js"></script>
+    <title>分类</title>
+    <link href="libs/boostrap/css/bootstrap.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="libs/boostrap/js/jquery-2.1.0.js"></script>
+    <script src="libs/boostrap/js/bootstrap.js"></script>
+<!--脚本引入-->
+    <script type="text/javascript" src="libs/include.js"> </script>
+
+    <style>
+<!--头部css-->
+        *{
+            margin-top: 0px;
+            padding: 0px 0px;
+        }
+        .search-input{
+            float: left;
+            border: 2px solid #fa8c35;
+            width: 400px; height: 35px;
+            padding-left: 5px;
+            margin-left: 200px;
+            margin-top: 20px;
+
+        }
+        .search-btn{
+            float: left;
+            border: 2px solid #fa8c35;
+            width: 90px; height: 35px;
+            background-color: #fa8c35;
+            text-align: center;
+            line-height: 35px;
+            margin-top: 20px;
+        }
+
+
+    </style>
+
+    <script>
+        $(function () {
+            // var search = location.search;
+            // //alert(search);//?id=5
+            // // 切割字符串，拿到第二个值
+            // var cid = search.split("=")[1];
+            //
+            // //当页码加载完成后调用load方法，发送ajax请求
+
+            //封装js获取参数
+            //搜索参数传递
+            var cid =getParameter("cid"); //直接是'5'，不用切割
+            var rname =getParameter("rname");  //搜索的值
+               //判断rname不为空
+               if(rname){
+                   rname = window.decodeURIComponent(rname);  //解码  解决搜索框的乱码
+               }
+            // 请求参数值  调用load 获取cid  rname
+            load(cid,null,rname);     //传cid告诉你哪个分类页面dao数据库 基本显示
+        });
+
+
+
+
+
+        //--封装        //参数使用根据实际
+        function load(cid,currentPage,rname) {
+            //发送ajax请求，请求route/pageQurey   传递查询分组           //传递搜索参数
+            $.get("route/pageQuery", {cid:cid,currentPage:currentPage,rname:rname},function (pb) {
+
+                //解析pagebean数据，展示到页面上
+
+                //分页工具条展示
+                //1展示总页码
+                $("#totalPage").html(pb.totalPage);
+                $("#totalCount").html(pb.totalCount);
+                /*
+                <li class=""><a href="#">首页</a> </li>
+                <li class=""><a href="#">上一页</a> </li>
+                <li class="active" ><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li class=""><a href="#">下一页</a> </li>
+                <li class=""><a href="#">末页</a> </li>
+                 */
+                //2展示分页页码
+                var lis ="";
+                var firstPage ='<li  onclick="javascript:load('+cid+','+1+',\''+rname+'\')"><a href="javascript:void(0)">首页</a> </li>';
+
+                    //计算上一页页码
+                   var beforenum =pb.currentPage -1;
+                   if(beforenum <=0){
+                       beforenum = 1;
+                   }
+                var beforePage ='<li onclick="javascript:load('+cid+','+beforenum+',\''+rname+'\')"><a href="javascript:void(0)">上一页</a></li>';
+                    //首页下一页拼接
+                    lis += firstPage;
+                    lis += beforePage;
+
+
+                //3.展示页码合理的条数（1.10个页码，前五后四  2，前面不够5个后边补齐10个  3，后面不足4个，前面补齐10个）
+                // for (var i = 1; i <= pb.totalPage; i++) {//展示全部页码
+
+                     //定义开始位置begin，结束位置end
+                    var begin;
+                    var end;
+
+                    //1.显示10个页码
+                    //特殊情况
+                    if(pb.totalPage< 10){  //总页码不够10页
+                        begin = 1;          //遍历从1开始
+                        end = pb.totalPage  //有几页显示几页
+                    }else{//总页码超过10页
+                        begin = pb.currentPage -5; //begin从当前页码-5 遍历
+                        end = pb.currentPage + 4;
+
+                        //2.避免负数，如果当前页码，前面不够5个，后面要补齐10个      1 2 当前页码 4 5 6 7 8 9 10
+                        if(begin< 1){ //当前页码-5 成负数时
+                            begin = 1;
+                            end = begin + 9;
+                        }
+                        //3.后边不够4个,前边补齐10个                   11 12 13 14 15 16 17 18 当前页码 20
+                        if(end > pb.totalPage){ //当前页码+大于总页码时
+                            end = pb.totalPage;
+                            begin = end -9;
+                        }
+                    }
+
+                for(var i = begin;i <=end;i++){  //合理遍历页码
+
+                    //给当前页码加特效
+                    var li;
+                    // 1.判断当前页码是否等于 i    是加样式  不是普通展示
+                    if(pb.currentPage == i){
+                        //每遍历一次创建1个页码 //调用load //分类    第几页是当前i值  然后load方法传递提交参数       a not
+                        li = '<li class="active" onclick="javascript:load('+cid+','+i+',\''+rname+'\')"><a href="javascript:void(0)">' + i + '</a></li>';
+                    }else{
+                        li = '<li onclick=" javascript:load('+cid+','+i+',\''+rname+'\')"><a href="javascript:void(0)">' +i+ '</a></li>';
+                    }
+                    lis += li; //拼接
+                }
+
+
+                    //计算下一页页码
+                    var nextnum =pb.currentPage +1;
+                var lastPage = '<li onclick="javascript:load('+cid+','+nextnum+',\''+rname+'\')"><a href="javascript:void(0)">下一页</a> </li>';
+                var nextPage = '<li onclick="javascript:load('+cid+','+pb.totalPage+',\''+rname+'\')"><a href="#">末页</a> </li>';
+                lis += lastPage;
+                lis += nextPage;
+                // 将lis内容 设置到 ul
+                $("#pagenum").html(lis)
+
+
+
+                //3.解析pageBean，展示到页面上
+                var routelis ="";
+
+                for (var i = 0; i < pb.list.length; i++) {
+                    var route = pb.list[i];
+                    var li = '<li>\n' +
+                        '        <div class="img"><img src="'+route.rimage+'"></div>\n' +
+                        '        <div class="text1">\n' +
+                        '            <p>' + route.rname + '</p>\n' +
+                        '            <br/>\n' +
+                        '            <p>' + route.routeIntroduce + '</p>\n' +
+                        '        </div>\n' +
+                        '        <div class="price">\n' +
+                        '            <p class="price_num">\n' +
+                        '                <span>&yen;</span>\n' +
+                        '                <span>' + route.price + '</span>\n' +
+                        '                <span>起</span>\n' +
+                        '            </p>\n' +
+                        '            <p><a href="route_detail.html?rid='+route.rid+'">查看详情</a></p>\n' +
+                        '        </div>\n' +
+                        '    </li>'
+                    //每遍历一次，拼接一次
+                    routelis += li;
+
+                }
+                $("#route").html(routelis);
+
+                //定位到页面顶部，页码改变是时页面定位到 0 0点
+                window.scrollTo(0,0);
+
+            });
+        }
+    </script>
+</head>
+<body>
+
+
+
+
+<!--引入头部-->
+<div id="header"></div>
+<div class="xinxi clearfix">
+    <div class="left">
+        <div class="header">
+            <span>商品信息</span>
+            <span class="jg">价格</span>
+        </div>
+<ul id="route">
+    <li>
+        <div class="img"><img src="libs/boostrap/img/jiangxuan_1.jpg" alt=""></div>
+        <div class="text1">
+            <p>【减100元 含除夕/春节出发】广州增城三英温泉度假酒店/自由行套票</p>
+            <br/>
+            <p>1-2月出发，网付立享￥1099/2人起！爆款位置有限，抢完即止！</p>
+        </div>
+        <div class="price">
+            <p class="price_num">
+                <span>&yen;</span>
+                <span>299</span>
+                <span>起</span>
+            </p>
+            <p><a href="route_detail.html">查看详情</a></p>
+        </div>
+    </li>
+</ul>
+    </div>
+</div>
+
+<!--分页 -->
+
+</div>
+<div class="page_num_inf">
+    <i></i> 共
+    <span id="totalPage"></span>页|<span id="totalCount"></span>条
+</div>
+
+<nav aria-label="">
+    <ul class="pagination" id="pagenum">
+
+<!--        <li class=""><a href="#">首页</a> </li>-->
+<!--        <li class=""><a href="#">上一页</a> </li>-->
+<!--        <li><a href="#">5</a></li>-->
+<!--        <li class=""><a href="#">下一页</a> </li>-->
+<!--        <li class=""><a href="#">末页</a> </li>-->
+    </ul>
+</nav>
+<!--引入底部-->
+<div id="footer"></div>
+
+
+
+</body>
+</html>

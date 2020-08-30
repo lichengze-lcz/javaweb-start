@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--  1 IE 支持-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录准备页面</title>
+    <link href="libs/boostrap/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="libs/boostrap/js/jquery-2.1.0.js"></script>
+    <!--引入css-->
+
+    <link rel="stylesheet" type="text/css" href="libs/boostrap/css/common.css">
+    <link rel="stylesheet" type="text/css" href="libs/boostrap/css/search.css">
+    <link rel="stylesheet" type="text/css" href="libs/boostrap/css/index.css">
+    <!--通过脚本加入header-->
+    <script src="libs/boostrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="libs/include.js"> </script>
+
+    <style>
+        *{
+            margin-top: 0px;
+            padding: 0px 0px;
+        }
+        .search-input{
+            float: left;
+            border: 2px solid #fa8c35;
+            width: 400px; height: 35px;
+            padding-left: 5px;
+            margin-left: 200px;
+            margin-top: 20px;
+
+        }
+        .search-btn{
+            float: left;
+            border: 2px solid #fa8c35;
+            width: 90px; height: 35px;
+            background-color: #fa8c35;
+            text-align: center;
+            line-height: 35px;
+            margin-top: 20px;
+        }
+        .navbar{background-color: #ffa531;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<!--轮播区域-->
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="2000";>
+    <!--轮播指标-->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1" ></li>
+        <li data-target="#myCarousel" data-slide-to="2" ></li>
+    </ol>
+    <!--轮播项目-->
+    <div class="carousel-inner" style="height: 420px;">
+        <div class="item active" >
+            <img src="libs/boostrap/img/banner_1.jpg" alt="First slide" >
+            <div class="carousel-caption">.</div>
+        </div>
+        <div class="item">
+            <img src="libs/boostrap/img/banner_2.jpg" alt="First slide" >
+            <div class="carousel-caption">..</div>
+        </div>
+        <div class="item">
+            <img src="libs/boostrap/img/banner_3.jpg" alt="First slide"  >
+            <div class="carousel-caption">...</div>
+        </div>
+    </div>
+    <!--轮播控制器-->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+    <!--轮播控制器-->
+</div>
+<div id="footer"></div>
+
+</body>
+</html>
